@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.newsapp.models.Article
 import com.example.newsapp.models.NewsResponse
 import com.example.newsapp.repository.NewsRepository
 import com.example.newsapp.util.Resource
@@ -33,6 +34,18 @@ class NewsViewModel @Inject constructor(
         _fetchedNews.postValue(Resource.Loading())
         val response = repository.searchNews(keyword, searchNewsPage)
         _fetchedNews.postValue(handleFetchedNewsResponse(response))
+    }
+
+    fun addToFavorite(article: Article) = viewModelScope.launch {
+        repository.addToFavorite(article)
+    }
+
+    fun getFavoriteArticles(): LiveData<List<Article>> {
+        return repository.getFavoriteArticles()
+    }
+
+    fun deleteArticles(article: Article) = viewModelScope.launch {
+        repository.deleteArticle(article)
     }
 
     private fun handleFetchedNewsResponse(response: Response<NewsResponse>): Resource<NewsResponse> {
