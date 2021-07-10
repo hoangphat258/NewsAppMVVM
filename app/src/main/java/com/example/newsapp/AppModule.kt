@@ -25,17 +25,22 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideApiService(): NewsAPI {
+    fun provideRetrofit(): Retrofit {
         val logging = HttpLoggingInterceptor()
         logging.setLevel(HttpLoggingInterceptor.Level.BODY)
         val client = OkHttpClient.Builder()
             .addInterceptor(logging)
             .build()
-        val retrofit = Retrofit.Builder()
+        return Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideApiService(retrofit: Retrofit): NewsAPI {
         return retrofit.create(NewsAPI::class.java)
     }
 }
